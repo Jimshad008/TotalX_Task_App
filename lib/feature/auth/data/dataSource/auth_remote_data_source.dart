@@ -1,12 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:totalx_task/core/constant/global%20constant.dart';
 
 import '../../../../core/error/exception.dart';
+import '../../presentation/pages/verify_otp_page.dart';
 
 abstract interface class AuthRemoteDataSource {
   Future<String> loginWithPhoneNo({
     required String phoneNo,
+    required BuildContext context,
   });
+  Future<String>verifyOtp({
+    required String verificationId,
+    required String otp
+});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -16,10 +23,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<String> loginWithPhoneNo({
     required String phoneNo,
+    required BuildContext  context
   }) async {
     try {
-      String? veriId;
-      await firebaseAuth.verifyPhoneNumber(
+
+    await firebaseAuth.verifyPhoneNumber(
           phoneNumber: "+91$phoneNo",
           verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
             await firebaseAuth.signInWithCredential(phoneAuthCredential);
@@ -28,13 +36,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             throw ServerException(message: error.toString());
           },
           codeSent: (String verificationId, int? forceResendingToken) {
-            veriId=verificationId;
+            Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) =>  VerifyOtpPage(phoneNo: phoneNo,verificationId: verificationId),), (route) => false);
+
           },
            codeAutoRetrievalTimeout: (String verificationId) {});
-   if(veriId==null){
-  throw const ServerException(message: "Error Occured");
-   }
-      return veriId!;
+
+      return "";
+    }on FirebaseAuthException catch(e){
+      throw ServerException(message: e.toString());
+    }
+    catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<String> verifyOtp({required String verificationId, required String otp}) async{
+    try{
+      PhoneAuthCredential credential=PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
+      final res=await firebaseAuth.signInWithCredential(credential);
+      if(res.user==null){
+        throw const ServerException(message: "Invalid Otp");
+      }
+    return res.user!.uid;
     }on FirebaseAuthException catch(e){
       throw ServerException(message: e.toString());
     }

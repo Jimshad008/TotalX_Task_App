@@ -2,17 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:totalx_task/core/constant/global%20constant.dart';
 import 'package:totalx_task/feature/auth/presentation/pages/login_page.dart';
+import 'package:totalx_task/feature/users/presentation/pages/user_list.dart';
 
+import 'feature/auth/presentation/bloc/auth_bloc.dart';
 import 'firebase_options.dart';
+import 'init_dependencies.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 
   );
-  runApp(const MyApp());
+  await initDependencies();
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (_) => serviceLocator<AuthBloc>(),
+    ),
+  ],
+  child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +37,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TotalX Task App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff2873F0)),
+
         useMaterial3: true,
       ),
       home: const MyHomePage(),
@@ -41,9 +55,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  keepLogin() async {
+    final SharedPreferences local=await SharedPreferences.getInstance();
+    userId=local.getString("uid")!;
+    if(userId==null){
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const LoginPage(),), (route) => false);
+    }
+    else{
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const UserList(),), (route) => false);
+    }
+  }
   addData(){
    Future.delayed(const Duration(seconds: 2)).then((value) =>
-   Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const LoginPage(),), (route) => false));
+  keepLogin());
   }
 @override
   void initState() {
