@@ -24,4 +24,5 @@ abstract interface class HomeRepository{
     required String ageFilter,
     required dynamic lastDoc,
   });
+  Future<Either<Failure, StreamSubscription<QuerySnapshot<Map<String, dynamic>>>>>getStartUsers();
 }

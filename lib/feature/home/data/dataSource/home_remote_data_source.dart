@@ -22,6 +22,7 @@ abstract interface class HomeRemoteDataSource {
     required String search,required String ageFilter,required dynamic lastDoc
 
   });
+  Future <StreamSubscription<QuerySnapshot<Map<String, dynamic>>>> getStartUsers();
 }
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
   final FirebaseFirestore firestore;
@@ -60,30 +61,38 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
   @override
   Future<StreamSubscription<QuerySnapshot<Map<String, dynamic>>>> getInitialUsers({required String search, required String ageFilter}) async {
    try{
+     print(search);
+     print("Sssssssssseeeeeeeaaaaaaaaaaaaaarrrrrrrrrrrrrrrrrrccccccccccccccchhhhhhhhhhhhhhhhhhhhh");
      if(search.isEmpty){
        if(ageFilter=="Younger"){
+         print("1111111111111111111111111111");
          return  firestore.collection(FirebaseConstants.userCollection).where("age",isLessThan: 60).limit(limit).snapshots().listen((event) {
          });
        }
        else if(ageFilter=="Elder"){
-         return  firestore.collection(FirebaseConstants.userCollection).where("age",isGreaterThanOrEqualTo: 60).limit(limit).snapshots().listen((event) {
+         print("22222222222222222222222");
+         return   firestore.collection(FirebaseConstants.userCollection).where("age",isGreaterThanOrEqualTo: 60).limit(limit).snapshots().listen((event) {
          });
        }
        else{
+         print("33333333333333333333333333333");
          return  firestore.collection(FirebaseConstants.userCollection).limit(limit).snapshots().listen((event) {
          });
        }
      }
      else{
        if(ageFilter=="Younger"){
+         print("44444444444444444444444444444444444");
          return  firestore.collection(FirebaseConstants.userCollection).where("age",isLessThan: 60).where("search",arrayContains: search.toUpperCase()).limit(limit).snapshots().listen((event) {
          });
        }
        else if(ageFilter=="Elder"){
+         print("555555555555555555555555555555");
          return  firestore.collection(FirebaseConstants.userCollection).where("age",isGreaterThanOrEqualTo: 60).where("search",arrayContains: search.toUpperCase()).limit(limit).snapshots().listen((event) {
          });
        }
        else{
+         print("6666666666666666666666666666666");
          return  firestore.collection(FirebaseConstants.userCollection).where("search",arrayContains: search.toUpperCase()).limit(limit).snapshots().listen((event) {
          });
        }
@@ -128,6 +137,18 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
         }
       }
 
+    }on FirebaseException catch(e){
+      throw ServerException(message: e.toString());
+    } catch(e){
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<StreamSubscription<QuerySnapshot<Map<String, dynamic>>>> getStartUsers()async {
+    try{
+          return  firestore.collection(FirebaseConstants.userCollection).limit(limit).snapshots().listen((event) {
+          });
     }on FirebaseException catch(e){
       throw ServerException(message: e.toString());
     } catch(e){

@@ -18,6 +18,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController phoneNo=TextEditingController();
   @override
+  void dispose() {
+    super.dispose();
+    phoneNo.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     var width=MediaQuery.of(context).size.width;
     var height=MediaQuery.of(context).size.height;

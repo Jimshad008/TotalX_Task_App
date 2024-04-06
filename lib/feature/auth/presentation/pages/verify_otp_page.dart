@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:totalx_task/feature/auth/presentation/pages/login_page.dart';
-import 'package:totalx_task/feature/home/presentation/pages/home_page.dart';
+
 
 
 import '../../../../core/common/loader.dart';
 import '../../../../core/utils/show_snackbar.dart';
+import '../../../home/presentation/pages/home_page.dart';
 import '../bloc/auth_bloc.dart';
 
 class VerifyOtpPage extends StatefulWidget {
@@ -51,6 +52,11 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
     );
   }
   TextEditingController otpController = TextEditingController();
+  @override
+  void dispose() {
+  otpController.dispose();
+    super.dispose();
+  }
 @override
   void initState() {
   Future.delayed(const Duration(seconds: 91)).then((value) {

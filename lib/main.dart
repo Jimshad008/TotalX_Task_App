@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TotalX Task App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff2873F0)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
 
         useMaterial3: true,
       ),

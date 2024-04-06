@@ -31,6 +31,13 @@ class _AddNewUserState extends State<AddNewUser> {
     }
   }
   @override
+  void dispose() {
+    super.dispose();
+  nameController.dispose();
+  ageController.dispose();
+  phoneNoController.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
    var  width=MediaQuery.of(context).size.width;
     var height=MediaQuery.of(context).size.height;

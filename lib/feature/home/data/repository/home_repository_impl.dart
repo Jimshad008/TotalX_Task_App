@@ -46,5 +46,14 @@ class HomeRepositoryImpl implements HomeRepository{
     return left(Failure( message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, StreamSubscription<QuerySnapshot<Map<String, dynamic>>>>> getStartUsers()async {
+    try{
+      return right (await homeRemoteDataSource.getStartUsers());
+    } on ServerException catch (e) {
+    return left(Failure( message: e.message));
+    }
+  }
   
 }

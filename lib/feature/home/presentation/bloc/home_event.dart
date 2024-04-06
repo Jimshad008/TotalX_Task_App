@@ -24,3 +24,7 @@ final class HomeGetNextUser extends HomeEvent{
     required this.ageFilter,required this.search,required this.lastDoc
   });
 }
+final class HomeGetStartUser extends HomeEvent{
+
+  HomeGetStartUser();
+}

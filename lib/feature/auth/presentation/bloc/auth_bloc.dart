@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required UserLogin userLogin,required OtpVerify otpVerify}) : _userLogin=userLogin,_otpVerify=otpVerify,super(AuthInitial()) {
     on<AuthLogin>((event, emit) async {
+      emit(AuthLoading());
 final res=await _userLogin.authRepository.loginWithPhoneNo(phoneNo: event.phoneNo,context: event.context);
 res.fold(
       (l) => emit(AuthFailure( l.message)),
@@ -22,6 +23,7 @@ res.fold(
 );
     });
     on<AuthOtpVerify>((event,emit)async{
+      emit(AuthLoading());
       final res=await _userLogin.authRepository.otpVerify(verificationId: event.verificationId, otp: event.otp);
       res.fold(
             (l) => emit(AuthFailure( l.message)),

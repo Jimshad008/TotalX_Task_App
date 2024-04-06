@@ -19,6 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final  GetNextUsers _getNextUsers;
   HomeBloc({required AddUser addUser,required GetInitialUsers getInitialUsers,required GetNextUsers getNextUsers}) :_addUser=addUser,_getInitialUser=getInitialUsers,_getNextUsers=getNextUsers, super(HomeInitial()) {
     on<HomeAddUser>((event, emit) async {
+      emit(HomeLoading());
      final res=await _addUser.homeRepository.addUser(name:event.name, age: event.age, image: event.image, phoneNo: event.phoneNo);
      res.fold(
            (l) => emit(HomeFailure( l.message)),
@@ -26,6 +27,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
      );
     });
     on<HomeGetInitialUser>((event,emit)async{
+      emit(HomeLoading());
       final res=await _getInitialUser.homeRepository.getInitialUsers(search: event.search, ageFilter: event.ageFilter);
       res.fold(
             (l) => emit(HomeFailure( l.message)),
@@ -33,11 +35,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<HomeGetNextUser>((event,emit)async{
+      emit(HomeLoading());
       final res=await _getInitialUser.homeRepository.getNextUsers(search: event.search, ageFilter: event.ageFilter, lastDoc: event.lastDoc);
       res.fold(
+
+            (l) => emit(HomeFailure( l.message)),
+            (uid) => emit(HomeSuccess1( uid)),
+      );
+    });
+    on<HomeGetStartUser>((event,emit)async{
+      emit(HomeLoading());
+      final res=await _getInitialUser.homeRepository.getStartUsers();
+      res.fold(
+
             (l) => emit(HomeFailure( l.message)),
             (uid) => emit(HomeSuccess1( uid)),
       );
     });
   }
+
 }
