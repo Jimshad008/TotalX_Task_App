@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:totalx_task/core/constant/global%20constant.dart';
 import 'package:totalx_task/feature/auth/presentation/pages/login_page.dart';
-import 'package:totalx_task/feature/users/presentation/pages/user_list.dart';
+import 'package:totalx_task/feature/home/presentation/pages/home_page.dart';
 
 import 'feature/auth/presentation/bloc/auth_bloc.dart';
+import 'feature/home/presentation/bloc/home_bloc.dart';
 import 'firebase_options.dart';
 import 'init_dependencies.dart';
 
@@ -23,6 +24,9 @@ Future<void> main() async {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (_) => serviceLocator<AuthBloc>(),
+    ),
+    BlocProvider(
+      create: (_) => serviceLocator<HomeBloc>(),
     ),
   ],
   child: const MyApp()));
@@ -57,12 +61,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   keepLogin() async {
     final SharedPreferences local=await SharedPreferences.getInstance();
-    userId=local.getString("uid")!;
+    userId=local.getString("uid");
     if(userId==null){
       Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const LoginPage(),), (route) => false);
     }
     else{
-      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const UserList(),), (route) => false);
+      Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const HomePage(),), (route) => false);
     }
   }
   addData(){

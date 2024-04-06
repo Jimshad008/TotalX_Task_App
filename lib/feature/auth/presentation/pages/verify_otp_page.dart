@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:totalx_task/feature/auth/presentation/pages/login_page.dart';
-import 'package:totalx_task/feature/users/presentation/pages/user_list.dart';
+import 'package:totalx_task/feature/home/presentation/pages/home_page.dart';
+
 
 import '../../../../core/common/loader.dart';
 import '../../../../core/utils/show_snackbar.dart';
@@ -25,18 +26,26 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
   int _secondsRemaining = 90;
   late Timer _timer;
   void _startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
           (Timer timer) {
         if (_secondsRemaining == 0) {
-          setState(() {
-            timer.cancel();
-          });
+          timer.cancel();
+          if(mounted){
+            setState(() {
+
+            });
+          }
+
         } else {
-          setState(() {
             _secondsRemaining--;
-          });
+
+          if(mounted){
+            setState(() {
+
+            });
+          }
         }
       },
     );
@@ -229,7 +238,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                  local.setString("uid", state.success);
 
                   showSnackBar(context, "Otp Verification Successful");
-                  Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) =>const UserList() ,), (route) => false);
+                  Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) =>const HomePage() ,), (route) => false);
                 }
 
 
