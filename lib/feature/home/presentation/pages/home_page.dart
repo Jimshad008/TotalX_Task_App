@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:totalx_task/core/common/loader.dart';
 import 'package:totalx_task/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:totalx_task/feature/home/presentation/widget/add_new_user_alert_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/utils/show_snackbar.dart';
 import '../../data/model/user_data_model.dart';
@@ -20,8 +23,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _currentLocation = '';
+
+
   Future<void> _getCurrentLocation() async {
     try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Location services are not enabled
+        return;
+      }
+
+      PermissionStatus permission = await Permission.location.status;
+      if (permission == PermissionStatus.denied) {
+        // Permission to access location is denied
+        permission = await Permission.location.request();
+        if (permission != PermissionStatus.granted) {
+          // Permission still not granted, handle accordingly
+          return;
+        }
+      }
+
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
@@ -60,6 +81,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
+    print(_currentLocation);
+    print("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
     width=MediaQuery.of(context).size.width;
     height=MediaQuery.of(context).size.height;
     return Scaffold(
@@ -73,7 +96,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
             ),
             Text(
-              _currentLocation,
+              _currentLocation==""?"Nilambur":_currentLocation,
               style: TextStyle(fontSize: width * 0.045, color: Colors.white,fontFamily: "Montserrat"),
             ),
           ],
